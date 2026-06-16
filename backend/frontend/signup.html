@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Blue Pulse — Register</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Arial;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+      }
+      .btn-gradient {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        width: 100%;
+      }
+      .back-link {
+        color: #3b82f6;
+        text-decoration: none;
+        display: inline-flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* small fixed control group (language + help) - non-invasive */
+      .lang-fixed {
+        position: fixed;
+        right: 12px;
+        top: 12px;
+        z-index: 999;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 0.28rem;
+        border-radius: 0.6rem;
+        box-shadow: 0 8px 20px rgba(2, 6, 23, 0.06);
+      }
+      .lang-btn {
+        padding: 0.36rem 0.6rem;
+        border-radius: 0.5rem;
+        background: white;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .audio-btn {
+        padding: 0.38rem 0.56rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.05);
+        display: inline-flex;
+        gap: 0.45rem;
+        align-items: center;
+        border: 1px solid rgba(2, 6, 23, 0.04);
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      .label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #1e293b;
+      }
+
+      /* keep small controls responsive */
+      @media (max-width: 480px) {
+        .lang-fixed {
+          right: 8px;
+          top: 8px;
+          padding: 0.2rem;
+        }
+        .lang-btn,
+        .audio-btn {
+          padding: 0.28rem 0.45rem;
+          font-size: 0.88rem;
+        }
+      }
+      :root {
+        --primary: #3b82f6;
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Arial;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+      }
+      .btn-gradient {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        width: 100%;
+      }
+      .back-link {
+        color: #3b82f6;
+        text-decoration: none;
+        display: inline-flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .lang-fixed {
+        position: fixed;
+        right: 12px;
+        top: 12px;
+        z-index: 999;
+        display: flex;
+        gap: 0.5rem;
+      }
+      .audio-btn {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.06);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Arial;
+        background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        min-height: 100vh;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+      }
+      .btn-gradient {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        width: 100%;
+      }
+      .back-link {
+        color: #3b82f6;
+        text-decoration: none;
+        display: inline-flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #1e293b;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Language toggle + Help button (consistent with login/index) -->
+    <div
+      class="lang-fixed"
+      role="region"
+      aria-label="Language and help controls"
+    >
+      <button id="langToggle" class="lang-btn" title="Change language">
+        हिन्दी
+      </button>
+      <button id="playHelp" class="audio-btn" aria-label="Play help">
+        🔊 <span data-i18n="audioPlay">Play help</span>
+      </button>
+    </div>
+
+    <div class="min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-md">
+        <a href="index.html" class="back-link"
+          >← <span data-i18n="backHome">Back to Home</span></a
+        >
+        <div class="card">
+          <div class="text-center mb-6">
+            <div
+              style="
+                width: 64px;
+                height: 64px;
+                border-radius: 1rem;
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                margin: 0 auto 12px;
+              "
+            ></div>
+            <h2 class="text-2xl font-bold" data-i18n="createAccount">
+              Create Account
+            </h2>
+            <p class="text-gray-600" data-i18n="regLead">
+              Register to report water supply issues
+            </p>
+          </div>
+
+          <form id="signupForm" class="space-y-4">
+            <div>
+              <label class="label" for="signup-email" data-i18n="emailLabel"
+                >Email</label
+              >
+              <input
+                id="signup-email"
+                type="email"
+                class="input-field"
+                placeholder="your@email.com"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                class="label"
+                for="signup-password"
+                data-i18n="passwordLabel"
+                >Password</label
+              >
+              <input
+                id="signup-password"
+                type="password"
+                class="input-field"
+                placeholder="Choose a strong password"
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="btn-gradient"
+              data-i18n="createAccountBtn"
+            >
+              Create Account
+            </button>
+
+            <p class="text-center text-sm text-gray-600">
+              <span data-i18n="alreadyAccount">Already have an account?</span>
+              <a href="login.html" class="text-link" data-i18n="signinLink"
+                >Sign in</a
+              >
+            </p>
+          </form>
+
+          <p id="msg" class="text-red-600 mt-3 hidden"></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Translations (English default, Hindi option)
+      const translations = {
+        en: {
+          title: "Blue Pulse — Register",
+          audioPlay: "Play help",
+          backHome: "Back to Home",
+          createAccount: "Create Account",
+          regLead: "Register to report water supply issues",
+          emailLabel: "Email",
+          passwordLabel: "Password",
+          createAccountBtn: "Create Account",
+          alreadyAccount: "Already have an account?",
+          signinLink: "Sign in",
+          audioHint:
+            "Fill email and password, then press Create Account to register.",
+        },
+        hi: {
+          title: "ब्लू पल्स — रजिस्टर",
+          audioPlay: "सहायता सुनें",
+          backHome: "होम पर वापस जाएँ",
+          createAccount: "खाता बनाएँ",
+          regLead: "जल आपूर्ति समस्याओं की रिपोर्ट करने के लिए रजिस्टर करें",
+          emailLabel: "ईमेल",
+          passwordLabel: "पासवर्ड",
+          createAccountBtn: "खाता बनाएँ",
+          alreadyAccount: "क्या आपके पास पहले से खाता है?",
+          signinLink: "साइन इन करें",
+          audioHint:
+            "अपना ईमेल और पासवर्ड दर्ज करें और रजिस्टर करने के लिए खाता बनाएँ दबाएँ।",
+        },
+      };
+
+      const AUDIO_BASE = "/audio"; // put help_en.mp3 and help_hi.mp3 here
+      const savedLang = localStorage.getItem("site-lang");
+      let lang = savedLang || "en"; // default to English
+
+      // Apply translations on page
+      function applyTranslations() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (translations[lang] && translations[lang][key])
+            el.innerText = translations[lang][key];
+        });
+        // show the language TO switch to (keeps label intuitive)
+        const toggle = document.getElementById("langToggle");
+        if (toggle) toggle.innerText = lang === "hi" ? "English" : "हिन्दी";
+        document.title = translations[lang]
+          ? translations[lang].title
+          : document.title;
+      }
+
+      // Try to play pre-recorded audio file; fallback to TTS if missing
+      function tryPlayFile(path) {
+        return new Promise((resolve) => {
+          const a = new Audio(path);
+          let played = false;
+          a.addEventListener("canplaythrough", () => {
+            a.play()
+              .then(() => {
+                played = true;
+                resolve(true);
+              })
+              .catch(() => resolve(false));
+          });
+          a.addEventListener("error", () => resolve(false));
+          // safety attempt after short timeout for browsers that don't fire canplaythrough early
+          setTimeout(() => {
+            if (!played) {
+              a.play()
+                .then(() => resolve(true))
+                .catch(() => resolve(false));
+            }
+          }, 700);
+        });
+      }
+
+      function ttsSpeak(text) {
+        if (!("speechSynthesis" in window)) {
+          console.warn("No TTS and no audio file.");
+          return;
+        }
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = lang === "hi" ? "hi-IN" : "en-US";
+        // try to pick a voice with matching language code prefix
+        const voices = speechSynthesis.getVoices();
+        const match = voices.find(
+          (v) => v.lang && v.lang.startsWith(u.lang.split("-")[0])
+        );
+        if (match) u.voice = match;
+        u.rate = 0.95;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      }
+
+      async function playHelp() {
+        const token = lang === "hi" ? "hi" : "en";
+        const filePath = `${AUDIO_BASE}/signup_${token}.mp3`;
+        const ok = await tryPlayFile(filePath);
+        if (!ok) {
+          // fallback to TTS using the helpful short phrase
+          const ttsText =
+            translations[lang] && translations[lang].audioHint
+              ? translations[lang].audioHint
+              : lang === "hi"
+              ? "अपना ईमेल और पासवर्ड दर्ज करें और रजिस्टर करें।"
+              : "Fill your email and password, then register.";
+          ttsSpeak(ttsText);
+        }
+      }
+
+      // DOM wiring
+      document.getElementById("playHelp").addEventListener("click", playHelp);
+
+      document.getElementById("langToggle").addEventListener("click", () => {
+        lang = lang === "hi" ? "en" : "hi";
+        localStorage.setItem("site-lang", lang);
+        applyTranslations();
+      });
+
+      // Signup form behavior (unchanged)
+      const API_BASE = "http://localhost:5000/api";
+      const form = document.getElementById("signupForm");
+      const msg = document.getElementById("msg");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        msg.classList.add("hidden");
+
+        const email = document.getElementById("signup-email").value.trim();
+        const password = document.getElementById("signup-password").value;
+
+        try {
+          const res = await fetch(`${API_BASE}/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password, role: "user" }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw data;
+          localStorage.setItem("bp_token", data.token);
+          localStorage.setItem("bp_user", JSON.stringify(data.user));
+          location.href = "/dashboard.html";
+        } catch (err) {
+          msg.textContent = err.error || "Registration failed";
+          msg.classList.remove("hidden");
+        }
+      });
+
+      // Init on load
+      applyTranslations();
+      // ensure voices load for TTS fallback (some browsers populate asynchronously)
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.onvoiceschanged = () => {};
+      }
+    </script>
+  </body>
+</html>

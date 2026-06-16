@@ -1,0 +1,10 @@
+Flask
+Flask-CORS
+Flask-SQLAlchemy
+Flask-Migrate
+PyJWT
+Werkzeug
+python-dotenv
+boto3        # optional for S3 uploads
+gunicorn
+psycopg2-binary

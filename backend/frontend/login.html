@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Blue Pulse — Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --primary: #3b82f6;
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Arial;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+      }
+      .btn-gradient {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        width: 100%;
+      }
+      .back-link {
+        color: #3b82f6;
+        text-decoration: none;
+        display: inline-flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .lang-fixed {
+        position: fixed;
+        right: 12px;
+        top: 12px;
+        z-index: 999;
+        display: flex;
+        gap: 0.5rem;
+      }
+      .audio-btn {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.06);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border: none;
+        cursor: pointer;
+      }
+      .lang-btn {
+        padding: 0.45rem 0.65rem;
+        border-radius: 0.5rem;
+        border: none;
+        cursor: pointer;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(2, 6, 23, 0.06);
+        font-weight: 600;
+      }
+      :root {
+        --primary: #3b82f6;
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Arial;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+      }
+      .btn-gradient {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        width: 100%;
+      }
+      .back-link {
+        color: #3b82f6;
+        text-decoration: none;
+        display: inline-flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .lang-fixed {
+        position: fixed;
+        right: 12px;
+        top: 12px;
+        z-index: 999;
+        display: flex;
+        gap: 0.5rem;
+      }
+      .audio-btn {
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.06);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      :root {
+        --primary: #3b82f6;
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Arial;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 12px 30px rgba(2, 6, 23, 0.06);
+      }
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+      }
+      .btn-gradient {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 0.75rem;
+        border-radius: 0.5rem;
+        border: none;
+        width: 100%;
+      }
+      .back-link {
+        color: #3b82f6;
+        text-decoration: none;
+        display: inline-flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="lang-fixed" role="region" aria-label="Language and help">
+        <button id="langToggle" class="lang-btn" title="Change language">
+          हिन्दी
+        </button>
+        <button id="playHelp" class="audio-btn" aria-label="Play help">
+          🔊 <span data-i18n="audioPlay">Play help</span>
+        </button>
+      </div>
+    </nav>
+
+    <div class="min-h-screen flex items-center justify-center p-4">
+      <div class="w-full max-w-md">
+        <a href="index.html" class="back-link"
+          >← <span data-i18n="backHome">Back to Home</span></a
+        >
+        <div class="card">
+          <div class="text-center mb-6">
+            <div
+              style="
+                width: 64px;
+                height: 64px;
+                border-radius: 1rem;
+                background: linear-gradient(135deg, #3b82f6, #2563eb);
+                margin: 0 auto 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              "
+            ></div>
+            <h2 class="text-2xl font-bold" data-i18n="welcome">Welcome Back</h2>
+            <p class="text-gray-600" data-i18n="signinLead">
+              Sign in to your Blue Pulse account
+            </p>
+          </div>
+
+          <form id="loginForm" class="space-y-4">
+            <div>
+              <label class="label" data-i18n="emailLabel">Email</label>
+              <input id="email" type="email" class="input-field" required />
+            </div>
+            <div>
+              <label class="label" data-i18n="passwordLabel">Password</label>
+              <input
+                id="password"
+                type="password"
+                class="input-field"
+                required
+              />
+            </div>
+            <button type="submit" class="btn-gradient" data-i18n="signinBtn">
+              Sign In
+            </button>
+            <p class="text-center text-sm text-gray-600">
+              <span data-i18n="noAccount">Don't have an account?</span>
+              <a href="signup.html" class="text-link" data-i18n="registerLink"
+                >Register</a
+              >
+            </p>
+          </form>
+          <p id="msg" class="text-red-600 mt-3 hidden" role="alert"></p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // -------------------------
+      // Translations (English + Hindi)
+      // -------------------------
+      const translations = {
+        en: {
+          title: "Blue Pulse — Login",
+          audioPlay: "Play help",
+          backHome: "Back to Home",
+          welcome: "Welcome Back",
+          signinLead: "Sign in to your Blue Pulse account",
+          emailLabel: "Email",
+          passwordLabel: "Password",
+          signinBtn: "Sign In",
+          noAccount: "Don't have an account?",
+          registerLink: "Register",
+          audioHint:
+            "Enter your email and password, then press Sign In to report issues.",
+        },
+        hi: {
+          title: "ब्लू पल्स — लॉगिन",
+          audioPlay: "सहायता सुनें",
+          backHome: "होम पर वापस जाएँ",
+          welcome: "फिर से स्वागत है",
+          signinLead: "अपने ब्लू पल्स खाते में साइन इन करें",
+          emailLabel: "ईमेल",
+          passwordLabel: "पासवर्ड",
+          signinBtn: "साइन इन",
+          noAccount: "खाता नहीं है?",
+          registerLink: "रजिस्टर करें",
+          audioHint:
+            "अपना ईमेल डालें और पासवर्ड डालकर साइन इन करें ताकि आप शिकायत दर्ज कर सकें।",
+        },
+      };
+
+      // default language: English unless user chose earlier
+      const savedLang = localStorage.getItem("site-lang");
+      let lang = savedLang || "en";
+
+      function applyTranslations() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          const text =
+            translations[lang] && translations[lang][key]
+              ? translations[lang][key]
+              : translations["en"][key] || "";
+          el.innerText = text;
+        });
+        // set toggle label to show language to switch TO (so it reads as the other language)
+        document.getElementById("langToggle").innerText =
+          lang === "hi" ? "English" : "हिन्दी";
+        document.title = translations[lang].title || document.title;
+      }
+
+      // -------------------------
+      // Pre-recorded audio play with fallback to TTS
+      // -------------------------
+      // File naming convention (place these in your public folder):
+      //   /audio/help_en.mp3   (English)
+      //   /audio/help_hi.mp3   (Hindi)
+      const AUDIO_BASE = "/audio";
+      const audioFileFor = (language) => `${AUDIO_BASE}/login_${language}.mp3`; // change extension/name if needed
+
+      // Try to play pre-recorded audio; returns a promise that resolves true if played, false otherwise
+      function playPreRecorded(langCode) {
+        return new Promise((resolve) => {
+          const path = audioFileFor(langCode);
+          const a = new Audio(path);
+          // try to load then play
+          let played = false;
+          a.addEventListener("canplaythrough", () => {
+            a.play()
+              .then(() => {
+                played = true;
+                resolve(true);
+              })
+              .catch((err) => {
+                console.warn("Pre-recorded play rejected", err);
+                resolve(false);
+              });
+          });
+          a.addEventListener("error", (e) => {
+            console.warn("Pre-recorded audio error", e);
+            resolve(false);
+          });
+          // attempt to load (some browsers will trigger canplaythrough quickly)
+          // Also add a timeout as fallback if canplaythrough not fired
+          setTimeout(() => {
+            if (!played) {
+              // try to play anyway (maybe it will start)
+              a.play()
+                .then(() => {
+                  resolve(true);
+                })
+                .catch(() => {
+                  resolve(false);
+                });
+            }
+          }, 800);
+        });
+      }
+
+      // Fallback to browser TTS
+      function speakFallback(text, langCode) {
+        if ("speechSynthesis" in window) {
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = langCode === "hi" ? "hi-IN" : "en-US";
+          // try to match a voice of that language
+          const voices = speechSynthesis.getVoices();
+          const match = voices.find(
+            (v) => v.lang && v.lang.startsWith(u.lang.split("-")[0])
+          );
+          if (match) u.voice = match;
+          u.rate = 0.95;
+          speechSynthesis.cancel();
+          speechSynthesis.speak(u);
+        } else {
+          console.warn("No TTS available and pre-recorded audio missing.");
+        }
+      }
+
+      async function playHelpClip() {
+        // language token for file naming (en / hi)
+        const token = lang === "hi" ? "hi" : "en";
+        const ok = await playPreRecorded(token);
+        if (!ok) {
+          // fallback to TTS using our text
+          speakFallback(translations[lang].audioHint, token);
+        }
+      }
+
+      // -------------------------
+      // UI wiring
+      // -------------------------
+      document.getElementById("langToggle").addEventListener("click", () => {
+        lang = lang === "hi" ? "en" : "hi";
+        localStorage.setItem("site-lang", lang);
+        applyTranslations();
+      });
+
+      document.getElementById("playHelp").addEventListener("click", () => {
+        playHelpClip();
+      });
+
+      // -------------------------
+      // Login form logic (unchanged)
+      // -------------------------
+      const API_BASE = "http://localhost:5000/api";
+      const form = document.getElementById("loginForm");
+      const msg = document.getElementById("msg");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        msg.classList.add("hidden");
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        try {
+          const res = await fetch(`${API_BASE}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+          const data = await res.json();
+          if (!res.ok) throw data;
+          localStorage.setItem("bp_token", data.token);
+          localStorage.setItem("bp_user", JSON.stringify(data.user));
+          if (data.user.role === "admin") location.href = "/admin.html";
+          else location.href = "/dashboard.html";
+        } catch (err) {
+          msg.textContent = err.error || "Login failed";
+          msg.classList.remove("hidden");
+        }
+      });
+
+      // -------------------------
+      // Init
+      // -------------------------
+      applyTranslations();
+      // make sure speechSynthesis voices load in browsers that load async
+      window.speechSynthesis.onvoiceschanged = () => {};
+    </script>
+  </body>
+</html>

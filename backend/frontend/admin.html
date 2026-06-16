@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Blue Pulse</title>
+    <meta
+      name="description"
+      content="Admin panel for managing water supply complaints and tracking repairs"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      :root {
+        --primary: 217 91% 60%;
+        --primary-dark: 221 83% 53%;
+        --primary-darker: 224 76% 48%;
+        --bg-light: 214 100% 98%;
+        --text-dark: 222 47% 11%;
+        --text-muted: 215 16% 47%;
+        --shadow-soft: 0 2px 8px -2px hsl(217 91% 60% / 0.08);
+        --shadow-medium: 0 8px 24px -4px hsl(217 91% 60% / 0.12);
+        --shadow-strong: 0 16px 48px -8px hsl(217 91% 60% / 0.18);
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto,
+          sans-serif;
+        background: linear-gradient(
+          135deg,
+          hsl(var(--bg-light)) 0%,
+          #f1f5f9 100%
+        );
+        color: hsl(var(--text-dark));
+        min-height: 100vh;
+      }
+      .navbar {
+        background: #fff;
+        box-shadow: var(--shadow-medium);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .card {
+        background: #fff;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: var(--shadow-soft);
+        border: 1px solid rgba(59, 130, 246, 0.06);
+      }
+      .complaint-card {
+        border-left: 4px solid hsl(var(--primary));
+        border-radius: 1rem;
+        padding: 1rem;
+      }
+      .input-field {
+        padding: 0.6rem 1rem;
+        border: 1px solid #e6eefb;
+        border-radius: 0.6rem;
+        width: 100%;
+      }
+      .btn {
+        padding: 0.6rem 1rem;
+        border-radius: 0.6rem;
+        border: none;
+        cursor: pointer;
+      }
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          hsl(var(--primary)) 0%,
+          hsl(var(--primary-dark)) 100%
+        );
+        color: #fff;
+      }
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: #fff;
+      }
+      .status-badge {
+        padding: 0.35rem 0.8rem;
+        border-radius: 9999px;
+        font-weight: 700;
+      }
+      .status-raised {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .status-assigned {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-installed {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-closed {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .select-field {
+        padding: 0.6rem;
+        border: 1px solid #e6eefb;
+        border-radius: 0.6rem;
+        width: 100%;
+      }
+      .assigned-block {
+        background: #f0f9ff;
+        border: 1px solid #dbeafe;
+        padding: 0.6rem;
+        border-radius: 0.6rem;
+        color: #0f172a;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: hsl(var(--text-muted));
+      }
+      @media (min-width: 768px) {
+        .grid-cols-2 {
+          display: grid;
+          grid-template-columns: 1fr 320px;
+          gap: 1rem;
+        }
+      }
+      :root {
+        --primary: 217 91% 60%;
+        --primary-dark: 221 83% 53%;
+        --primary-darker: 224 76% 48%;
+        --accent: 38 92% 50%;
+        --accent-light: 43 96% 56%;
+        --bg-light: 214 100% 98%;
+        --text-dark: 222 47% 11%;
+        --text-muted: 215 16% 47%;
+        --shadow-soft: 0 2px 8px -2px hsl(217 91% 60% / 0.08);
+        --shadow-medium: 0 8px 24px -4px hsl(217 91% 60% / 0.12);
+        --shadow-strong: 0 16px 48px -8px hsl(217 91% 60% / 0.18);
+        --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.2);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          hsl(var(--bg-light)) 0%,
+          #f1f5f9 100%
+        );
+        color: hsl(var(--text-dark));
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-8px);
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: scale(1);
+        }
+        to {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+      }
+
+      .animate-scale-in {
+        animation: scaleIn 0.5s ease-out;
+      }
+
+      .animate-slide-down {
+        animation: slideDown 0.4s ease-out;
+      }
+
+      .fade-out {
+        animation: fadeOut 0.4s ease-out forwards;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background: white;
+        box-shadow: var(--shadow-medium);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: blur(10px);
+      }
+
+      /* Card Styles */
+      .card {
+        background: white;
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow-soft);
+        padding: 2rem;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(59, 130, 246, 0.08);
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-strong);
+        transform: translateY(-6px);
+        border-color: rgba(59, 130, 246, 0.15);
+      }
+
+      .complaint-card {
+        background: linear-gradient(
+          145deg,
+          white 0%,
+          hsl(var(--bg-light)) 100%
+        );
+        border-left: 4px solid hsl(var(--primary));
+        position: relative;
+        overflow: hidden;
+      }
+
+      .complaint-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          hsl(var(--primary) / 0.03) 0%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
+
+      /* Button Styles */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .btn:hover {
+        transform: scale(1.05);
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          hsl(var(--primary)) 0%,
+          hsl(var(--primary-dark)) 100%
+        );
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(
+          135deg,
+          hsl(var(--primary-dark)) 0%,
+          hsl(var(--primary-darker)) 100%
+        );
+        box-shadow: var(--shadow-strong);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-success:hover {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        box-shadow: 0 8px 24px -4px rgba(239, 68, 68, 0.3);
+      }
+
+      /* Select Styles */
+      .select-field {
+        padding: 0.625rem 1rem;
+        border: 2px solid hsl(var(--primary) / 0.15);
+        border-radius: 0.75rem;
+        font-size: 0.875rem;
+        transition: all 0.3s ease;
+        background: white;
+        font-weight: 500;
+        color: hsl(var(--text-dark));
+      }
+
+      .select-field:focus {
+        outline: none;
+        border-color: hsl(var(--primary));
+        box-shadow: var(--shadow-medium);
+      }
+
+      /* Status Badge */
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.375rem 1rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .status-raised {
+        background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+        color: #991b1b;
+      }
+      .status-assigned {
+        background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+        color: #92400e;
+      }
+      .status-installed {
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        color: #1e40af;
+      }
+      .status-closed {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        color: #065f46;
+      }
+
+      /* Image Styles */
+      .complaint-image {
+        width: 160px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-medium);
+        transition: all 0.3s ease;
+      }
+
+      .complaint-image:hover {
+        transform: scale(1.08);
+        box-shadow: var(--shadow-strong);
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: hsl(var(--text-muted));
+      }
+
+      /* Logo Animation */
+      .logo-icon {
+        animation: float 3s ease-in-out infinite;
+      }
+
+      /* Link Styles */
+      .nav-link {
+        color: hsl(var(--text-muted));
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+      }
+
+      .nav-link:hover {
+        color: hsl(var(--primary));
+      }
+
+      /* Header Gradient */
+      .text-gradient {
+        background: linear-gradient(
+          135deg,
+          hsl(var(--primary)) 0%,
+          hsl(var(--primary-dark)) 50%,
+          hsl(var(--primary-darker)) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .complaint-card {
+          flex-direction: column;
+        }
+
+        .card {
+          padding: 1.5rem;
+        }
+
+        .btn {
+          padding: 0.625rem 1.25rem;
+          font-size: 0.875rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar">
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div class="flex items-center gap-3">
+          <svg
+            class="w-10 h-10"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
+            <path
+              d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"
+              stroke-width="1.5"
+            ></path>
+          </svg>
+          <div>
+            <div style="font-weight: 800; color: rgb(30, 58, 138)">
+              Blue Pulse
+            </div>
+            <div
+              style="
+                font-size: 12px;
+                color: rgb(99, 102, 241);
+                font-weight: 700;
+              "
+            >
+              ADMIN PANEL
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3">
+          <a href="/" style="color: rgb(97, 106, 127); text-decoration: none"
+            >Home</a
+          >
+          <button id="logout" class="btn btn-danger">Logout</button>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-6">
+      <header class="mb-4">
+        <h1 style="font-size: 2rem; margin-bottom: 0.25rem">
+          Manage Complaints
+        </h1>
+        <p style="color: rgb(100, 116, 139)">
+          Review and update the status of water supply complaints
+        </p>
+      </header>
+
+      <!-- Employees manager -->
+      <section class="card">
+        <h2 style="font-weight: 700; margin-bottom: 0.75rem">
+          Manage Employees
+        </h2>
+        <form
+          id="employeeForm"
+          class="flex flex-wrap gap-3"
+          style="align-items: center"
+        >
+          <input
+            id="empName"
+            class="input-field"
+            placeholder="Name"
+            style="flex: 1; min-width: 160px"
+            required
+          />
+          <input
+            id="empEmail"
+            class="input-field"
+            placeholder="Email"
+            style="flex: 1; min-width: 200px"
+            required
+          />
+          <input
+            id="empPhone"
+            class="input-field"
+            placeholder="Phone"
+            style="width: 180px"
+            required
+          />
+          <button type="submit" class="btn btn-primary">Add Employee</button>
+        </form>
+      </section>
+
+      <!-- Complaints + controls -->
+      <section id="complaintsList" class="space-y-4"></section>
+    </main>
+
+    <script>
+      // Config
+      const API_BASE = "http://localhost:5000/api";
+      const token = localStorage.getItem("bp_token");
+      const userRaw = localStorage.getItem("bp_user");
+
+      if (!token || !userRaw) {
+        alert("Please login as admin");
+        location.href = "/login.html";
+      }
+
+      let user;
+      try {
+        user = JSON.parse(userRaw);
+      } catch (e) {
+        localStorage.removeItem("bp_token");
+        localStorage.removeItem("bp_user");
+        alert("Session invalid");
+        location.href = "/login.html";
+      }
+      if (user.role !== "admin") {
+        alert("Admin required");
+        location.href = "/";
+      }
+
+      const authFetch = (url, opts = {}) => {
+        opts.headers = opts.headers || {};
+        if (!opts.headers["Authorization"])
+          opts.headers["Authorization"] = `Bearer ${token}`;
+        return fetch(url, opts);
+      };
+
+      document.getElementById("logout").addEventListener("click", () => {
+        localStorage.removeItem("bp_token");
+        localStorage.removeItem("bp_user");
+        location.href = "/";
+      });
+
+      // Utility
+      function escapeHtml(s = "") {
+        return String(s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+      function statusClass(status) {
+        if (!status) return "status-raised";
+        const k = String(status).toLowerCase();
+        return (
+          {
+            raised: "status-raised",
+            assigned: "status-assigned",
+            installed: "status-installed",
+            closed: "status-closed",
+          }[k] || "status-raised"
+        );
+      }
+
+      // Global cache of employees
+      window.allEmployees = [];
+
+      // Load employees (must run before rendering complaints so dropdowns are populated)
+      async function loadEmployees() {
+        try {
+          const res = await authFetch(`${API_BASE}/employees`);
+          if (!res.ok) throw await res.json();
+          const arr = await res.json();
+          window.allEmployees = Array.isArray(arr) ? arr : [];
+        } catch (err) {
+          console.error("Failed to load employees", err);
+          window.allEmployees = [];
+        }
+      }
+
+      // Add employee handler
+      document
+        .getElementById("employeeForm")
+        .addEventListener("submit", async (ev) => {
+          ev.preventDefault();
+          const name = document.getElementById("empName").value.trim();
+          const email = document.getElementById("empEmail").value.trim();
+          const phone = document.getElementById("empPhone").value.trim();
+          if (!name || !email || !phone)
+            return alert("Name, email and phone required");
+          try {
+            const res = await authFetch(`${API_BASE}/employees`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name, email, phone }),
+            });
+            const payload = await res.json();
+            if (!res.ok) throw payload;
+            document.getElementById("empName").value = "";
+            document.getElementById("empEmail").value = "";
+            document.getElementById("empPhone").value = "";
+            await loadEmployees();
+            await loadComplaints(); // refresh complaints so dropdowns get new employee
+          } catch (err) {
+            console.error("Add employee failed", err);
+            alert(err && err.error ? err.error : "Failed to add employee");
+          }
+        });
+
+      // Render complaints list
+      async function loadComplaints() {
+        try {
+          const res = await authFetch(`${API_BASE}/complaints`);
+          if (!res.ok) {
+            const payload = await res.json().catch(() => ({}));
+            throw payload;
+          }
+          const arr = await res.json();
+          const container = document.getElementById("complaintsList");
+
+          if (!Array.isArray(arr)) throw new Error("Invalid response");
+
+          if (arr.length === 0) {
+            container.innerHTML = `<div class="card empty-state"><div style="font-weight:700">No complaints found</div><div style="color:#6b7280">There are no complaints to manage at this time.</div></div>`;
+            return;
+          }
+
+          // build HTML safely, placing employee-select outside of <select>
+          container.innerHTML = arr
+            .map((c, idx) => {
+              const badge = statusClass(c.status || "");
+              const photoHtml = c.photo_path
+                ? `<div style="margin-top:.5rem"><img src="/uploads/${encodeURIComponent(
+                    c.photo_path
+                  )}" alt="photo" style="width:160px;height:120px;object-fit:cover;border-radius:.6rem"></div>`
+                : "";
+              // build employee options
+              const empOptions = (window.allEmployees || [])
+                .map(
+                  (e) =>
+                    `<option value="${e.id}">${escapeHtml(
+                      e.name
+                    )} (${escapeHtml(e.phone)})</option>`
+                )
+                .join("");
+              // assigned block (if complaint already has assigned_to payload from backend)
+              const assignedBlock = c.assigned_to
+                ? `<div style="margin-top:.6rem" class="assigned-block">
+                <div style="font-weight:700">👷 ${escapeHtml(
+                  c.assigned_to.name || "Unknown"
+                )}</div>
+                <div style="font-size:.92rem;color:#334155">📞 ${escapeHtml(
+                  c.assigned_to.phone || "N/A"
+                )} · ✉️ ${escapeHtml(c.assigned_to.email || "N/A")}</div>
+              </div>`
+                : "";
+
+              return `
+              <div class="card complaint-card" data-cid="${c.id}">
+                <div style="display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+                  <div style="flex:1;min-width:220px">
+                    <div style="font-weight:700;font-size:1.05rem">${escapeHtml(
+                      c.title
+                    )}</div>
+                    <div style="color:#6b7280;margin-top:.25rem">${escapeHtml(
+                      c.description
+                    )}</div>
+                    ${photoHtml}
+                    <div style="margin-top:.5rem;color:#94a3b8;font-size:.9rem">🕒 ${new Date(
+                      c.timestamp
+                    ).toLocaleString()}</div>
+                    ${assignedBlock}
+                  </div>
+
+                  <div style="width:300px;min-width:220px;display:flex;flex-direction:column;gap:.5rem;align-items:stretch">
+                    <div style="display:flex;justify-content:flex-end">
+                      <span class="status-badge ${badge}">${escapeHtml(
+                String(c.status || "").toUpperCase()
+              )}</span>
+                    </div>
+
+                    <div>
+                      <label style="display:block;font-size:.85rem;color:#475569;margin-bottom:.25rem">Change Status</label>
+                      <select id="status-${
+                        c.id
+                      }" class="select-field" onchange="toggleEmployeeSelect('${
+                c.id
+              }', this.value)">
+                        <option value="raised" ${
+                          c.status === "raised" ? "selected" : ""
+                        }>Raised</option>
+                        <option value="assigned" ${
+                          c.status === "assigned" ? "selected" : ""
+                        }>Assigned</option>
+                        <option value="installed" ${
+                          c.status === "installed" ? "selected" : ""
+                        }>Installed</option>
+                        <option value="closed" ${
+                          c.status === "closed" ? "selected" : ""
+                        }>Closed</option>
+                      </select>
+                    </div>
+
+                    <!-- employee select container (hidden until assigned) -->
+                    <div id="employee-select-${c.id}" style="display:${
+                c.status === "assigned" ? "block" : "none"
+              }">
+                      <label style="display:block;font-size:.85rem;color:#475569;margin:6px 0">Assign Employee</label>
+                      <select id="emp-${c.id}" class="select-field">
+                        <option value="">-- choose employee --</option>
+                        ${empOptions}
+                      </select>
+                    </div>
+
+                    <button class="btn btn-primary" data-action="update" data-id="${
+                      c.id
+                    }">Update Status</button>
+                    ${
+                      String(c.status || "").toLowerCase() === "closed"
+                        ? `<button class="btn btn-danger" data-action="delete" data-id="${c.id}">Delete Complaint</button>`
+                        : ""
+                    }
+                  </div>
+                </div>
+              </div>
+            `;
+            })
+            .join("");
+
+          // attach event listeners AFTER DOM inserted
+          document.querySelectorAll('[data-action="update"]').forEach((btn) => {
+            btn.addEventListener("click", () => updateStatus(btn.dataset.id));
+          });
+          document.querySelectorAll('[data-action="delete"]').forEach((btn) => {
+            btn.addEventListener("click", () =>
+              deleteComplaint(btn.dataset.id)
+            );
+          });
+        } catch (err) {
+          console.error("Error loading complaints", err);
+          document.getElementById(
+            "complaintsList"
+          ).innerHTML = `<div class="card empty-state" style="color:#ef4444">Error loading complaints. Please try again.</div>`;
+        }
+      }
+
+      // toggle employee select visibility
+      function toggleEmployeeSelect(id, status) {
+        const block = document.getElementById(`employee-select-${id}`);
+        if (!block) return;
+        if (status === "assigned") block.style.display = "block";
+        else block.style.display = "none";
+      }
+
+      // update status (sends assigned_to when relevant)
+      async function updateStatus(id) {
+        try {
+          const sel = document.getElementById(`status-${id}`);
+          if (!sel) return alert("Missing status selector");
+          const status = sel.value;
+          const body = { status };
+          if (status === "assigned") {
+            const empSel = document.getElementById(`emp-${id}`);
+            if (empSel && empSel.value) body.assigned_to = empSel.value;
+            else return alert("Please choose an employee to assign");
+          }
+          const res = await authFetch(`${API_BASE}/complaints/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          const payload = await res.json().catch(() => ({}));
+          if (!res.ok) throw payload;
+          await loadComplaints();
+        } catch (err) {
+          console.error("Update failed", err);
+          alert(err && err.error ? err.error : "Failed to update status");
+        }
+      }
+
+      // delete complaint
+      async function deleteComplaint(id) {
+        if (!confirm("Delete this closed complaint? This action is permanent."))
+          return;
+        try {
+          const res = await authFetch(`${API_BASE}/complaints/${id}`, {
+            method: "DELETE",
+          });
+          const payload = await res.json().catch(() => ({}));
+          if (!res.ok) throw payload;
+          await loadEmployees(); // refresh employees list if necessary
+          await loadComplaints();
+        } catch (err) {
+          console.error("Delete failed", err);
+          alert(err && err.error ? err.error : "Failed to delete complaint");
+        }
+      }
+
+      // initial boot: load employees FIRST so dropdowns are ready, then complaints
+      (async function boot() {
+        await loadEmployees();
+        await loadComplaints();
+      })();
+    </script>
+  </body>
+</html>

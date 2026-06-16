@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Blue Pulse - Smart Water-Supply Monitoring</title>
+    <meta
+      name="description"
+      content="Blue Pulse helps rural communities report and track water-supply problems with smart monitoring and admin management tools."
+    />
+    <meta name="author" content="Blue Pulse" />
+
+    <meta
+      property="og:title"
+      content="Blue Pulse - Smart Water-Supply Monitoring"
+    />
+    <meta
+      property="og:description"
+      content="Empowering rural areas with real-time water supply tracking and transparent reporting."
+    />
+    <meta property="og:type" content="website" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+
+      header.topbar,
+      header.topbar .nav-controls,
+      header.topbar .lang-btn,
+      header.topbar .audio-btn,
+      header.topbar #voiceSelect,
+      header.topbar .btn {
+        all: unset; 
+        box-sizing: border-box;
+      }
+
+      header.topbar {
+        position: sticky;
+        top: 0;
+        z-index: 90;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(6px);
+        border-bottom: 1px solid rgba(15, 23, 42, 0.03);
+        display: block;
+      }
+      header.topbar .max-w-7xl {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+      }
+
+      /* only header controls: compact pills, not affecting .btn elsewhere */
+      header.topbar .nav-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      header.topbar .lang-btn,
+      header.topbar .audio-btn,
+      header.topbar #voiceSelect {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        padding: 0.42rem 0.65rem;
+        border-radius: 0.55rem;
+        border: 1px solid rgba(15, 23, 42, 0.06);
+        background: #fff;
+        color: inherit;
+        font-weight: 600;
+        font-size: 0.92rem;
+        cursor: pointer;
+        box-shadow: 0 6px 18px rgba(2, 6, 23, 0.04);
+        transition: transform 0.12s ease, box-shadow 0.12s ease,
+          background 0.12s ease;
+      }
+      header.topbar .audio-btn {
+        background: rgba(0, 0, 0, 0.04);
+        border: 1px solid rgba(2, 6, 23, 0.04);
+      }
+      header.topbar .lang-btn:hover,
+      header.topbar .audio-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(2, 6, 23, 0.06);
+      }
+
+      /* Header CTAs kept compact and scoped so .btn in header won't change global .btn */
+      header.topbar .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0.85rem;
+        border-radius: 0.55rem;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+
+      /* ===== Restore original hero/main .btn appearance (VERY specific) =====
+   This targets buttons in hero sections, CTA sections, cards — NOT header.
+   Adjust values to match your original design if needed.
+*/
+      .hero-gradient .btn,
+section .hero-gradient .btn, /* extra safety */
+main .btn,
+section .btn,
+footer .btn,
+.card .btn,
+.hero-title ~ .btn,
+.hero-gradient a.btn,
+section .btn-primary,
+section .btn-secondary,
+section .btn-accent {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 1.5rem 2rem !important; /* restore big hero padding */
+        border-radius: 0.75rem !important; /* restore rounded corners */
+        font-weight: 600 !important;
+        font-size: 1.125rem !important;
+        text-decoration: none !important;
+        transition: all 0.25s ease !important;
+        box-shadow: var(--shadow-strong) !important;
+      }
+
+      /* Keep primary/secondary/accent look but ensure header rules don't override them */
+      .btn-primary {
+        background: white !important;
+        color: hsl(var(--primary)) !important;
+      }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05) !important;
+        color: white !important;
+      }
+      .btn-accent {
+        background: hsl(var(--accent)) !important;
+        color: hsl(var(--text-dark)) !important;
+      }
+
+      /* tiny responsive tweaks (header controls wrap without overlapping on small screens) */
+      @media (max-width: 820px) {
+        header.topbar .max-w-7xl {
+          padding: 0.4rem 0.8rem;
+        }
+        header.topbar .nav-controls {
+          gap: 0.35rem;
+        }
+        header.topbar .lang-btn,
+        header.topbar .audio-btn,
+        header.topbar #voiceSelect,
+        header.topbar .btn {
+          font-size: 0.9rem;
+          padding: 0.38rem 0.5rem;
+        }
+      }
+
+      /* Accessibility: scoped focus outlines */
+      header.topbar .lang-btn:focus,
+      header.topbar .audio-btn:focus,
+      header.topbar #voiceSelect:focus,
+      header.topbar .btn:focus {
+        outline: 3px solid rgba(59, 130, 246, 0.14);
+        outline-offset: 2px;
+      }
+
+      /* Prevent header styles from shifting page content on anchor scrolling */
+      body {
+        scroll-padding-top: 72px;
+      }
+
+      :root {
+        --primary: 217 91% 60%;
+        --primary-dark: 221 83% 53%;
+        --primary-darker: 224 76% 48%;
+        --accent: 38 92% 50%;
+        --accent-light: 43 96% 56%;
+        --bg-light: 214 100% 98%;
+        --text-dark: 222 47% 11%;
+        --text-muted: 215 16% 47%;
+        --shadow-soft: 0 2px 8px -2px hsl(217 91% 60% / 0.08);
+        --shadow-medium: 0 8px 24px -4px hsl(217 91% 60% / 0.12);
+        --shadow-strong: 0 16px 48px -8px hsl(217 91% 60% / 0.18);
+        --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.2);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(
+          135deg,
+          hsl(var(--bg-light)) 0%,
+          #f1f5f9 100%
+        );
+        color: hsl(var(--text-dark));
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        min-height: 100vh;
+      }
+
+      /* Animations */
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      @keyframes pulse-soft {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.6;
+        }
+      }
+
+      @keyframes fade-in-up {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scale-in {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .animate-float {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .animate-pulse-soft {
+        animation: pulse-soft 3s ease-in-out infinite;
+      }
+
+      .animate-fade-in-up {
+        animation: fade-in-up 0.6s ease-out forwards;
+        opacity: 0;
+      }
+
+      .animate-scale-in {
+        animation: scale-in 0.5s ease-out forwards;
+        opacity: 0;
+      }
+
+      /* Hero gradient */
+      .hero-gradient {
+        background: linear-gradient(
+          135deg,
+          hsl(var(--primary)) 0%,
+          hsl(var(--primary-dark)) 50%,
+          hsl(var(--primary-darker)) 100%
+        );
+      }
+
+      /* Text gradient */
+      .text-gradient {
+        background: linear-gradient(
+          to right,
+          hsl(var(--primary)),
+          hsl(var(--primary-dark)),
+          hsl(var(--primary-darker))
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Shadows */
+      .shadow-soft {
+        box-shadow: var(--shadow-soft);
+      }
+      .shadow-medium {
+        box-shadow: var(--shadow-medium);
+      }
+      .shadow-strong {
+        box-shadow: var(--shadow-strong);
+      }
+      .shadow-glow {
+        box-shadow: var(--shadow-glow);
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 1.125rem;
+        text-decoration: none;
+        transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: pointer;
+        border: none;
+      }
+
+      .btn-primary {
+        background: white;
+        color: hsl(var(--primary));
+        box-shadow: var(--shadow-strong);
+      }
+
+      .btn-primary:hover {
+        background: #eff6ff;
+        transform: scale(1.05);
+      }
+
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.05);
+      }
+
+      .btn-accent {
+        background: hsl(var(--accent));
+        color: hsl(var(--text-dark));
+        font-weight: 700;
+        box-shadow: var(--shadow-strong);
+      }
+
+      .btn-accent:hover {
+        background: hsl(var(--accent-light));
+        transform: scale(1.05);
+      }
+
+      /* Cards */
+      .card {
+        background: white;
+        border-radius: 1.5rem;
+        padding: 2rem;
+        box-shadow: var(--shadow-medium);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-strong);
+        transform: translateY(-8px);
+      }
+
+      .feature-icon {
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 0.75rem;
+        background: linear-gradient(
+          135deg,
+          hsl(var(--primary)) 0%,
+          hsl(var(--primary-dark)) 100%
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: var(--shadow-medium);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .card:hover .feature-icon {
+        box-shadow: var(--shadow-glow);
+        transform: scale(1.1);
+      }
+
+      /* Icon styles */
+      .icon {
+        width: 1.75rem;
+        height: 1.75rem;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 3rem;
+        }
+        .section-title {
+          font-size: 2.5rem;
+        }
+        .btn {
+          padding: 1rem 1.5rem;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Topbar with language toggle, voice-pack selector and help audio button -->
+    <header
+      class="topbar"
+      style="
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(6px);
+        position: sticky;
+        top: 0;
+        z-index: 70;
+      "
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <svg
+            class="w-8 h-8 text-blue-600"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            style="flex-shrink: 0"
+          >
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+          </svg>
+          <span class="font-bold text-slate-800" style="font-size: 1.05rem"
+            >Blue Pulse</span
+          >
+        </div>
+
+        <div
+          class="nav-controls"
+          style="display: flex; align-items: center; gap: 0.5rem"
+        >
+          <!-- Language toggle: shows the language you will switch TO -->
+          <button
+            id="langToggle"
+            class="lang-btn"
+            aria-pressed="false"
+            title="Change language"
+            style="
+              padding: 0.45rem 0.65rem;
+              border-radius: 0.5rem;
+              border: none;
+              cursor: pointer;
+              background: #fff;
+              box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+              font-weight: 600;
+            "
+          >
+            हिन्दी
+          </button>
+
+          <!-- Voice-pack selector: choose which pre-recorded voice pack to use -->
+          <select
+            id="voiceSelect"
+            aria-label="Voice pack"
+            style="
+              padding: 0.45rem 0.6rem;
+              border-radius: 0.5rem;
+              border: 1px solid #e2e8f0;
+              background: white;
+              font-weight: 600;
+            "
+          >
+            <option value="default">Default voice</option>
+            <option value="custom1">Custom voice 1</option>
+          </select>
+
+          <!-- Play help clip -->
+          <button
+            id="playHelp"
+            class="audio-btn"
+            title="Play help audio"
+            style="
+              padding: 0.35rem 0.6rem;
+              border-radius: 0.5rem;
+              background: rgba(0, 0, 0, 0.06);
+              border: none;
+              cursor: pointer;
+              display: inline-flex;
+              align-items: center;
+              gap: 0.5rem;
+            "
+          >
+            🔊 <span id="playLabel">Help</span>
+          </button>
+
+          <a
+            href="signup.html"
+            class="btn btn-secondary"
+            data-i18n="signup"
+            style="
+              margin-left: 0.4rem;
+              padding: 0.6rem 0.85rem;
+              font-size: 0.95rem;
+            "
+            >User Register</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white relative overflow-hidden">
+      <!-- Background effects -->
+      <div class="absolute inset-0 overflow-hidden opacity-10">
+        <div
+          class="absolute top-20 left-20 w-64 h-64 bg-white rounded-full blur-[100px] animate-float"
+        ></div>
+        <div
+          class="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-[120px] animate-pulse-soft"
+        ></div>
+        <div
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px] opacity-50"
+        ></div>
+      </div>
+
+      <div
+        class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32"
+      >
+        <div class="text-center space-y-8 animate-fade-in-up">
+          <!-- Logo and Title -->
+          <div class="flex items-center justify-center gap-4 mb-6">
+            <div
+              class="p-3 bg-white/10 backdrop-blur-sm rounded-2xl shadow-glow animate-float"
+            >
+              <svg
+                class="w-12 h-12 md:w-16 md:h-16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+              </svg>
+            </div>
+            <h1
+              class="hero-title text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter"
+              data-i18n="title"
+            >
+              Blue Pulse
+            </h1>
+          </div>
+
+          <!-- Subtitle -->
+          <p
+            class="text-xl md:text-2xl lg:text-3xl font-medium text-blue-50 max-w-3xl mx-auto leading-relaxed"
+            data-i18n="subtitle"
+          >
+            Smart Water-Supply Monitoring for Rural Communities
+          </p>
+
+          <p
+            class="text-base md:text-lg text-blue-100 max-w-2xl mx-auto leading-relaxed"
+            data-i18n="lead"
+          >
+            Empowering rural areas with real-time water supply tracking,
+            transparent reporting, and efficient problem resolution.
+          </p>
+
+          <!-- CTA Buttons -->
+          <div
+            class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8"
+          >
+            <a
+              href="login.html"
+              class="btn btn-primary"
+              data-i18n="login_cta"
+              style="
+                display: inline-flex;
+                gap: 0.5rem;
+                padding: 0.85rem 1rem;
+                font-size: 1rem;
+              "
+              >Login</a
+            >
+            <a
+              href="signup.html"
+              class="btn btn-secondary"
+              data-i18n="signup_cta"
+              style="padding: 0.85rem 1rem; font-size: 1rem"
+              >User Register</a
+            >
+            <a
+              href="admin_register.html"
+              class="btn btn-accent"
+              data-i18n="admin_cta"
+              style="padding: 0.85rem 1rem; font-size: 1rem"
+              >Admin Portal</a
+            >
+          </div>
+
+          <!-- Stats -->
+          <div class="pt-12 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div class="space-y-2">
+              <div class="text-3xl md:text-4xl font-bold text-white">10K+</div>
+              <div class="text-sm md:text-base text-blue-100" data-i18n="stat1">
+                Active Users
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="text-3xl md:text-4xl font-bold text-white">500+</div>
+              <div class="text-sm md:text-base text-blue-100" data-i18n="stat2">
+                Communities
+              </div>
+            </div>
+            <div class="space-y-2">
+              <div class="text-3xl md:text-4xl font-bold text-white">95%</div>
+              <div class="text-sm md:text-base text-blue-100" data-i18n="stat3">
+                Resolution Rate
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-20 md:py-32">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="card shadow-strong bg-gradient-to-br from-white to-blue-50 animate-fade-in-up"
+          style="
+            animation-delay: 0.2s;
+            padding: 3rem 2rem;
+            border-radius: 1.5rem;
+          "
+        >
+          <div class="max-w-4xl mx-auto space-y-6">
+            <h2
+              class="section-title text-4xl md:text-5xl font-bold text-gradient"
+              data-i18n="about_title"
+            >
+              What is Blue Pulse?
+            </h2>
+            <div
+              class="space-y-4 text-lg md:text-xl leading-relaxed"
+              style="color: hsl(var(--text-dark)); opacity: 0.8"
+              data-i18n="about_body"
+            >
+              Blue Pulse is a comprehensive water-supply monitoring platform
+              designed specifically for rural communities. We bridge the gap
+              between residents and water management authorities through
+              transparent, real-time tracking of water supply issues.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section (kept same but keys added where helpful) -->
+    <section
+      class="py-20 md:py-32 bg-gradient-to-b from-transparent to-blue-50/30"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="text-center mb-16 space-y-4 animate-fade-in-up"
+          style="animation-delay: 0.1s"
+        >
+          <h2
+            class="section-title text-4xl md:text-5xl lg:text-6xl font-bold text-gradient"
+            data-i18n="features_title"
+          >
+            Powerful Features
+          </h2>
+          <p
+            class="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed"
+            style="color: hsl(var(--text-muted))"
+            data-i18n="features_sub"
+          >
+            Everything you need to manage water supply issues efficiently
+          </p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8 lg:gap-12">
+          <!-- Feature 1 -->
+          <div
+            class="card animate-fade-in-up"
+            style="
+              animation-delay: 0.2s;
+              background: rgba(255, 255, 255, 0.8);
+              backdrop-filter: blur(10px);
+            "
+          >
+            <div class="space-y-4">
+              <div class="feature-icon">
+                <svg class="icon" style="color: white" viewBox="0 0 24 24">
+                  <path
+                    d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                  />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="16" y1="13" x2="8" y2="13" />
+                  <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
+              </div>
+              <h3
+                class="text-2xl font-bold"
+                style="color: hsl(var(--primary))"
+                data-i18n="feat1_title"
+              >
+                Submit Complaints
+              </h3>
+              <p
+                class="text-base leading-relaxed"
+                style="color: hsl(var(--text-muted))"
+                data-i18n="feat1_body"
+              >
+                Registered users can easily submit detailed complaints with
+                photos and precise location data. Anonymous visitors can view
+                but not submit reports.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature 2 -->
+          <div
+            class="card animate-fade-in-up"
+            style="
+              animation-delay: 0.3s;
+              background: rgba(255, 255, 255, 0.8);
+              backdrop-filter: blur(10px);
+            "
+          >
+            <div class="space-y-4">
+              <div class="feature-icon">
+                <svg class="icon" style="color: white" viewBox="0 0 24 24">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+                </svg>
+              </div>
+              <h3
+                class="text-2xl font-bold"
+                style="color: hsl(var(--primary))"
+                data-i18n="feat2_title"
+              >
+                Track Repairs
+              </h3>
+              <p
+                class="text-base leading-relaxed"
+                style="color: hsl(var(--text-muted))"
+                data-i18n="feat2_body"
+              >
+                Monitor real-time status updates, timestamps, and repair
+                progress with photos. Admins keep everyone informed throughout
+                the resolution process.
+              </p>
+            </div>
+          </div>
+
+          <!-- Feature 3 -->
+          <div
+            class="card animate-fade-in-up"
+            style="
+              animation-delay: 0.4s;
+              background: rgba(255, 255, 255, 0.8);
+              backdrop-filter: blur(10px);
+            "
+          >
+            <div class="space-y-4">
+              <div class="feature-icon">
+                <svg class="icon" style="color: white" viewBox="0 0 24 24">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                </svg>
+              </div>
+              <h3
+                class="text-2xl font-bold"
+                style="color: hsl(var(--primary))"
+                data-i18n="feat3_title"
+              >
+                Admin Tools
+              </h3>
+              <p
+                class="text-base leading-relaxed"
+                style="color: hsl(var(--text-muted))"
+                data-i18n="feat3_body"
+              >
+                Comprehensive admin panel for filtering complaints, updating
+                statuses, managing priorities, and generating detailed
+                analytical reports.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section
+      class="py-20 md:py-32 bg-gradient-to-b from-blue-50/30 to-transparent"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          class="hero-gradient rounded-3xl p-12 md:p-16 lg:p-20 text-center shadow-strong overflow-hidden relative animate-fade-in-up"
+          style="animation-delay: 0.2s"
+        >
+          <div class="absolute inset-0 overflow-hidden opacity-10">
+            <div
+              class="absolute top-10 right-10 w-64 h-64 bg-white rounded-full blur-[100px] animate-pulse-soft"
+            ></div>
+            <div
+              class="absolute bottom-10 left-10 w-80 h-80 bg-white rounded-full blur-[120px] animate-float"
+            ></div>
+          </div>
+
+          <div class="relative space-y-6 max-w-3xl mx-auto">
+            <h2
+              class="text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight"
+              data-i18n="cta_title"
+            >
+              Ready to Get Started?
+            </h2>
+            <p
+              class="text-lg md:text-xl text-blue-50 leading-relaxed"
+              data-i18n="cta_sub"
+            >
+              Join thousands of users already tracking and resolving water
+              supply issues in their communities.
+            </p>
+            <div
+              class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4"
+            >
+              <a
+                href="login.html"
+                class="btn btn-primary"
+                style="display: inline-flex; gap: 0.5rem"
+                data-i18n="login_cta_small"
+                >Sign In</a
+              >
+              <a
+                href="admin_register.html"
+                class="btn btn-accent"
+                data-i18n="admin_cta_small"
+                >Admin Portal</a
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer
+      class="bg-gradient-to-r from-slate-900 to-slate-800 text-slate-300 py-12"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center space-y-4">
+          <p class="text-base md:text-lg font-medium">
+            © 2025 Blue Pulse. Empowering Rural Communities.
+          </p>
+          <p class="text-sm text-slate-400" data-i18n="footer">
+            Making water supply management transparent, efficient, and
+            accessible.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Script: translations, language toggle, voice-pack selection, play help logic (pre-recorded + fallback to TTS) -->
+    <script>
+      (function () {
+        // ---------- TRANSLATIONS ----------
+        const i18n = {
+          en: {
+            metaTitle: "Blue Pulse - Smart Water-Supply Monitoring",
+            title: "Blue Pulse",
+            subtitle: "Smart Water-Supply Monitoring for Rural Communities",
+            lead: "Empowering rural areas with real-time water supply tracking, transparent reporting, and efficient problem resolution.",
+            login: "Login",
+            signup: "User Register",
+            login_cta: "Login",
+            signup_cta: "User Register",
+            admin_cta: "Admin Portal",
+            login_cta_small: "Sign In",
+            admin_cta_small: "Admin Portal",
+            stat1: "Active Users",
+            stat2: "Communities",
+            stat3: "Resolution Rate",
+            about_title: "What is Blue Pulse?",
+            about_body:
+              "Blue Pulse is a comprehensive water-supply monitoring platform designed specifically for rural communities. We bridge the gap between residents and water management authorities through transparent, real-time tracking of water supply issues.",
+            features_title: "Powerful Features",
+            features_sub:
+              "Everything you need to manage water supply issues efficiently",
+            feat1_title: "Submit Complaints",
+            feat1_body:
+              "Registered users can easily submit detailed complaints with photos and precise location data. Anonymous visitors can view but not submit reports.",
+            feat2_title: "Track Repairs",
+            feat2_body:
+              "Monitor real-time status updates, timestamps, and repair progress with photos. Admins keep everyone informed throughout the resolution process.",
+            feat3_title: "Admin Tools",
+            feat3_body:
+              "Comprehensive admin panel for filtering complaints, updating statuses, managing priorities, and generating detailed analytical reports.",
+            cta_title: "Ready to Get Started?",
+            cta_sub:
+              "Join thousands of users already tracking and resolving water supply issues in their communities.",
+            footer:
+              "Making water supply management transparent, efficient, and accessible.",
+            playLabel: "Help",
+          },
+          hi: {
+            metaTitle: "ब्लू पल्स - स्मार्ट जल आपूर्ति मॉनिटरिंग",
+            title: "ब्लू पल्स",
+            subtitle: "ग्रामीण समुदायों के लिए स्मार्ट जल आपूर्ति मॉनिटरिंग",
+            lead: "वास्तविक समय में पानी की आपूर्ति पर नजर रखें, शिकायत दर्ज करें और समाधान ट्रैक करें।",
+            login: "लॉगिन",
+            signup: "यूज़र रजिस्टर",
+            login_cta: "लॉगिन",
+            signup_cta: "यूज़र रजिस्टर",
+            admin_cta: "एडमिन पोर्टल",
+            login_cta_small: "साइन इन",
+            admin_cta_small: "एडमिन पोर्टल",
+            stat1: "सक्रिय उपयोगकर्ता",
+            stat2: "समुदाय",
+            stat3: "समाधान दर",
+            about_title: "ब्लू पल्स क्या है?",
+            about_body:
+              "ब्लू पल्स एक ऐसा प्लेटफ़ॉर्म है जो ग्रामीण इलाक़ों के लिए जल आपूर्ति समस्याओं की रिपोर्ट और ट्रैकिंग में मदद करता है।",
+            features_title: "शक्तिशाली सुविधाएँ",
+            features_sub:
+              "पानी की आपूर्ति से जुड़ी समस्याओं का कुशलतापूर्वक प्रबंधन करने के लिए आवश्यक सब कुछ",
+            feat1_title: "शिकायत दर्ज करें",
+            feat1_body:
+              "पंजीकृत उपयोगकर्ता फोटो और सटीक स्थान डेटा के साथ शिकायतें आसानी से दर्ज कर सकते हैं। अनाम आगंतुक रिपोर्ट देख सकते हैं लेकिन दर्ज नहीं कर सकते।",
+            feat2_title: "मरम्मत ट्रैक करें",
+            feat2_body:
+              "तस्वीरों के साथ रीयल-टाइम स्थिति अपडेट, टाइमस्टैम्प और मरम्मत प्रगति देखें।",
+            feat3_title: "एडमिन उपकरण",
+            feat3_body:
+              "शिकायतों को फ़िल्टर करने, स्थिति अपडेट करने, प्राथमिकताएँ प्रबंधित करने और विस्तृत रिपोर्ट बनाने के लिए व्यापक एडमिन पैनल।",
+            cta_title: "शुरू करने के लिए तैयार?",
+            cta_sub:
+              "हज़ारों उपयोगकर्ताओं में शामिल हों जो पहले ही अपनी समुदायों में पानी की आपूर्ति के मुद्दों को ट्रैक और सुलझा रहे हैं।",
+            footer: "जल आपूर्ति प्रबंधन को पारदर्शी, कुशल और सुलभ बनाना।",
+            playLabel: "सहायता",
+          },
+        };
+
+        // ---------- State ----------
+        const savedLang = localStorage.getItem("site-lang");
+        let lang = savedLang || "en"; // default English
+        const VOICE_STORAGE = "bp_voice_pack";
+        const savedVoicePack = localStorage.getItem(VOICE_STORAGE) || "default";
+
+        // map of voice packs -> label (you can add real packs here)
+        const voicePacks = {
+          default: "Default voice",
+          custom1: "Custom voice 1",
+        };
+
+        // update DOM strings
+        function applyI18n() {
+          document.querySelectorAll("[data-i18n]").forEach((el) => {
+            const k = el.getAttribute("data-i18n");
+            if (i18n[lang] && i18n[lang][k]) el.innerText = i18n[lang][k];
+            else if (i18n["en"][k]) el.innerText = i18n["en"][k];
+          });
+          document.title =
+            (i18n[lang] && i18n[lang].metaTitle) || document.title;
+          // lang toggle shows the language it will switch TO
+          const toggle = document.getElementById("langToggle");
+          if (toggle) toggle.innerText = lang === "hi" ? "English" : "हिन्दी";
+          // play label
+          const playLabel = document.getElementById("playLabel");
+          if (playLabel)
+            playLabel.innerText =
+              i18n[lang] && i18n[lang].playLabel
+                ? i18n[lang].playLabel
+                : lang === "hi"
+                ? "सहायता"
+                : "Help";
+        }
+
+        // ---------- Voice file logic ----------
+        // audio file naming conventions (put these in your public /audio folder):
+        // 1) per-language+pack: /audio/help_{lang}_{pack}.mp3  (e.g., help_en_default.mp3)
+        // 2) fallback per-language: /audio/help_{lang}.mp3
+        // language tokens: 'en' or 'hi'
+        const AUDIO_BASE = "/audio";
+
+        function audioPathFor(langToken, packId) {
+          // prefer pack-specific
+          if (packId && packId !== "default") {
+            return `${AUDIO_BASE}/help_${langToken}_${packId}.mp3`;
+          }
+          // default pack uses simpler name
+          return `${AUDIO_BASE}/help_${langToken}.mp3`;
+        }
+
+        function tryPlayAudio(path) {
+          return new Promise((resolve) => {
+            const a = new Audio(path);
+            let played = false;
+            a.addEventListener("canplaythrough", () => {
+              a.play()
+                .then(() => {
+                  played = true;
+                  resolve(true);
+                })
+                .catch((e) => {
+                  console.warn("play rejected", e);
+                  resolve(false);
+                });
+            });
+            a.addEventListener("error", (e) => {
+              // file doesn't exist or network error
+              resolve(false);
+            });
+            // safety try after timeout for some browsers
+            setTimeout(() => {
+              if (!played) {
+                a.play()
+                  .then(() => resolve(true))
+                  .catch(() => resolve(false));
+              }
+            }, 700);
+          });
+        }
+
+        function ttsFallback(text) {
+          if (!("speechSynthesis" in window)) {
+            console.warn("No TTS available and no pre-recorded audio.");
+            return;
+          }
+          const u = new SpeechSynthesisUtterance(text);
+          u.lang = lang === "hi" ? "hi-IN" : "en-US";
+          // try to pick a matching voice
+          const voices = speechSynthesis.getVoices();
+          const match = voices.find(
+            (v) => v.lang && v.lang.startsWith(u.lang.split("-")[0])
+          );
+          if (match) u.voice = match;
+          u.rate = 0.95;
+          speechSynthesis.cancel();
+          speechSynthesis.speak(u);
+        }
+
+        async function playHelpClip() {
+          const langToken = lang === "hi" ? "hi" : "en";
+          const pack =
+            localStorage.getItem(VOICE_STORAGE) || savedVoicePack || "default";
+
+          // try pack-specific file first (if pack != default)
+          if (pack && pack !== "default") {
+            const pathPack = audioPathFor(langToken, pack);
+            const okPack = await tryPlayAudio(pathPack);
+            if (okPack) return;
+          }
+
+          // try default language file (help_en.mp3 or help_hi.mp3)
+          const pathDefault = audioPathFor(langToken, "default");
+          const okDefault = await tryPlayAudio(pathDefault);
+          if (okDefault) return;
+
+          // as last resort, TTS fallback
+          const hintText =
+            i18n[lang] && i18n[lang].playLabel
+              ? i18n[lang].playLabel
+              : lang === "hi"
+              ? "सहायता"
+              : "Help";
+          const speakText =
+            lang === "hi"
+              ? "शिकायत दर्ज करने के लिए पंजीकरण करें या लॉगिन करें, फिर शिकायत दर्ज करें बटन दबाएं।"
+              : "To raise a complaint, register or login, then tap Submit Complaint. Take a photo, share your location, and submit.";
+          ttsFallback(speakText || hintText);
+        }
+
+        // ---------- UI wiring ----------
+        // populate voice select labels
+        const voiceSelect = document.getElementById("voiceSelect");
+        if (voiceSelect) {
+          voiceSelect.innerHTML = "";
+          for (const id in voicePacks) {
+            const opt = document.createElement("option");
+            opt.value = id;
+            opt.textContent = voicePacks[id];
+            voiceSelect.appendChild(opt);
+          }
+          const currentPack =
+            localStorage.getItem(VOICE_STORAGE) || savedVoicePack || "default";
+          voiceSelect.value = currentPack;
+          voiceSelect.addEventListener("change", () => {
+            localStorage.setItem(VOICE_STORAGE, voiceSelect.value);
+          });
+        }
+
+        // language toggle
+        const langToggle = document.getElementById("langToggle");
+        if (langToggle) {
+          langToggle.addEventListener("click", () => {
+            lang = lang === "hi" ? "en" : "hi";
+            localStorage.setItem("site-lang", lang);
+            applyI18n();
+          });
+        }
+
+        // play help button
+        const playBtn = document.getElementById("playHelp");
+        if (playBtn) {
+          playBtn.addEventListener("click", () => {
+            playHelpClip();
+          });
+        }
+
+        // initial apply
+        applyI18n();
+
+        // ensure voices load for TTS fallback in browsers that populate asynchronously
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.onvoiceschanged = function () {
+            /* no-op but ensures voices load */
+          };
+        }
+      })();
+    </script>
+  </body>
+</html>

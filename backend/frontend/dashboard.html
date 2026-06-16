@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Dashboard - Blue Pulse</title>
+    <meta
+      name="description"
+      content="Submit and track water supply complaints in your area"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .lang-fixed {
+        display: none;
+      }
+      .audio-btn {
+        padding: 0.35rem 0.6rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.06);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+        border: none;
+        font-size: 0.95rem;
+      }
+      .btn.btn-primary {
+        padding: 0.35rem 0.8rem;
+        font-size: 0.95rem;
+      }
+
+      @media (max-width: 640px) {
+        .navbar .max-w-6xl {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .navbar .flex.items-center.gap-3 {
+          gap: 8px;
+        }
+        .audio-btn,
+        .btn.btn-primary {
+          font-size: 0.9rem;
+          padding: 0.3rem 0.6rem;
+        }
+      }
+
+      :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --accent: #fbbf24;
+        --bg-light: #f8fafc;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --shadow-soft: 0 2px 8px -2px rgba(59, 130, 246, 0.1);
+        --shadow-medium: 0 8px 24px -4px rgba(59, 130, 246, 0.15);
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+      }
+      .animate-scale-in {
+        animation: scaleIn 0.5s ease-out;
+      }
+      .animate-slide-down {
+        animation: slideDown 0.4s ease-out;
+      }
+      .animate-pulse-soft {
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      /* Navbar/Card/Button/Input styles */
+      .navbar {
+        background: white;
+        box-shadow: var(--shadow-medium);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-soft);
+        padding: 2rem;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        box-shadow: var(--shadow-medium);
+      }
+      .form-card {
+        background: linear-gradient(145deg, white 0%, #f8fafc 100%);
+        border-top: 4px solid var(--primary);
+      }
+      .complaint-card {
+        background: linear-gradient(145deg, white 0%, #f8fafc 100%);
+        border-left: 4px solid var(--primary);
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+      .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-strong);
+      }
+      .btn-secondary {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+      }
+      .input-field:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: var(--shadow-medium);
+      }
+      .label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      .location-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: #f0f9ff;
+        border: 2px solid #bfdbfe;
+        border-radius: 0.5rem;
+        color: #1e40af;
+        font-size: 0.875rem;
+      }
+      .complaint-image {
+        max-width: 144px;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow-soft);
+        transition: transform 0.3s ease;
+      }
+      .complaint-image:hover {
+        transform: scale(1.05);
+      }
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-muted);
+      }
+
+      .lang-fixed {
+        position: fixed;
+        right: 12px;
+        top: 12px;
+        z-index: 9999;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .audio-btn {
+        padding: 0.45rem 0.6rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.06);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        border: none;
+      }
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+      }
+
+      /* status badges */
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .status-raised {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .status-assigned {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-installed {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-closed {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      /* small helper for assigned-to block */
+      .assigned-block {
+        padding: 0.75rem 1rem;
+        border-radius: 0.5rem;
+        background: #eff8ff;
+        border: 1px solid #dbeafe;
+        color: #0f172a;
+      }
+      /* Design System Variables */
+      /* remove fixed float style; inline controls in navbar now */
+      .lang-fixed {
+        display: none;
+      }
+
+      /* inline audio button style to match navbar sizes */
+      .audio-btn {
+        padding: 0.35rem 0.6rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.06);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        cursor: pointer;
+        border: none;
+        font-size: 0.95rem;
+      }
+
+      /* smaller btn-primary for navbar */
+      .btn.btn-primary {
+        padding: 0.35rem 0.8rem;
+        font-size: 0.95rem;
+      }
+
+      /* ensure navbar items don't wrap awkwardly on narrow screens */
+      @media (max-width: 640px) {
+        .navbar .max-w-6xl {
+          padding-left: 12px;
+          padding-right: 12px;
+        }
+        .navbar .flex.items-center.gap-3 {
+          gap: 8px;
+        }
+        .audio-btn,
+        .btn.btn-primary {
+          font-size: 0.9rem;
+          padding: 0.3rem 0.6rem;
+        }
+      }
+
+      :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --accent: #fbbf24;
+        --bg-light: #f8fafc;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --shadow-soft: 0 2px 8px -2px rgba(59, 130, 246, 0.1);
+        --shadow-medium: 0 8px 24px -4px rgba(59, 130, 246, 0.15);
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+      }
+      .animate-scale-in {
+        animation: scaleIn 0.5s ease-out;
+      }
+      .animate-slide-down {
+        animation: slideDown 0.4s ease-out;
+      }
+      .animate-pulse-soft {
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background: white;
+        box-shadow: var(--shadow-medium);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      /* Card Styles */
+      .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-soft);
+        padding: 2rem;
+        transition: all 0.3s ease;
+      }
+      .card:hover {
+        box-shadow: var(--shadow-medium);
+      }
+      .form-card {
+        background: linear-gradient(145deg, white 0%, #f8fafc 100%);
+        border-top: 4px solid var(--primary);
+      }
+      .complaint-card {
+        background: linear-gradient(145deg, white 0%, #f8fafc 100%);
+        border-left: 4px solid var(--primary);
+      }
+
+      /* Button Styles */
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+      .btn-primary:hover {
+        transform: scale(1.05);
+        box-shadow: var(--shadow-strong);
+      }
+      .btn-secondary {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      /* Input Styles */
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+      }
+      .input-field:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: var(--shadow-medium);
+      }
+      .label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      /* Misc */
+      .location-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: #f0f9ff;
+        border: 2px solid #bfdbfe;
+        border-radius: 0.5rem;
+        color: #1e40af;
+        font-size: 0.875rem;
+      }
+      .complaint-image {
+        max-width: 144px;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow-soft);
+        transition: transform 0.3s ease;
+      }
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-muted);
+      }
+
+      /* Fixed language/audio controls */
+      .lang-fixed {
+        position: fixed;
+        right: 12px;
+        top: 12px;
+        z-index: 9999;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+      }
+      .audio-btn {
+        padding: 0.45rem 0.6rem;
+        border-radius: 0.5rem;
+        background: rgba(0, 0, 0, 0.06);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        border: none;
+      }
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+      }
+      :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --accent: #fbbf24;
+        --bg-light: #f8fafc;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --shadow-soft: 0 2px 8px -2px rgba(59, 130, 246, 0.1);
+        --shadow-medium: 0 8px 24px -4px rgba(59, 130, 246, 0.15);
+        --shadow-strong: 0 16px 48px -8px rgba(59, 130, 246, 0.25);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        min-height: 100vh;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes scaleIn {
+        from {
+          opacity: 0;
+          transform: scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes slideDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+      }
+
+      .animate-scale-in {
+        animation: scaleIn 0.5s ease-out;
+      }
+
+      .animate-slide-down {
+        animation: slideDown 0.4s ease-out;
+      }
+
+      .animate-pulse-soft {
+        animation: pulse 2s ease-in-out infinite;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background: white;
+        box-shadow: var(--shadow-medium);
+        position: sticky;
+        top: 0;
+        z-index: 50;
+      }
+
+      /* Card Styles */
+      .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: var(--shadow-soft);
+        padding: 2rem;
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-medium);
+      }
+
+      .form-card {
+        background: linear-gradient(145deg, white 0%, #f8fafc 100%);
+        border-top: 4px solid var(--primary);
+      }
+
+      .complaint-card {
+        background: linear-gradient(145deg, white 0%, #f8fafc 100%);
+        border-left: 4px solid var(--primary);
+      }
+
+      /* Button Styles */
+      .btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        font-size: 1rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+        transform: scale(1.05);
+        box-shadow: var(--shadow-strong);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-secondary:hover {
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        transform: scale(1.05);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        color: white;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .btn-danger:hover {
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        transform: scale(1.05);
+      }
+
+      /* Input Styles */
+      .input-field {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: var(--shadow-medium);
+      }
+
+      .label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+      }
+
+      /* Status Badge */
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-raised {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .status-assigned {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .status-installed {
+        background: #dbeafe;
+        color: #1e40af;
+      }
+      .status-closed {
+        background: #d1fae5;
+        color: #065f46;
+      }
+
+      /* Image Styles */
+      .complaint-image {
+        max-width: 144px;
+        border-radius: 0.75rem;
+        box-shadow: var(--shadow-soft);
+        transition: transform 0.3s ease;
+      }
+
+      .complaint-image:hover {
+        transform: scale(1.05);
+      }
+
+      /* Location Info */
+      .location-info {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: #f0f9ff;
+        border: 2px solid #bfdbfe;
+        border-radius: 0.5rem;
+        color: #1e40af;
+        font-size: 0.875rem;
+      }
+
+      /* Empty State */
+      .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: var(--text-muted);
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar animate-slide-down">
+      <div
+        class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center"
+      >
+        <div class="flex items-center gap-3">
+          <svg
+            class="w-8 h-8 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"
+            />
+          </svg>
+          <span class="font-bold text-blue-700 text-xl">Blue Pulse</span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a
+            href="/"
+            id="homeLink"
+            class="text-gray-600 hover:text-blue-600 transition-colors font-medium mr-2"
+            data-i18n="home"
+            >Home</a
+          >
+
+          <div class="flex items-center gap-2 mr-2">
+            <button
+              id="langToggle"
+              class="btn btn-primary text-sm py-1 px-3"
+              aria-pressed="false"
+            >
+              हिन्दी
+            </button>
+            <button
+              id="playHelp"
+              class="audio-btn text-sm py-1 px-2"
+              aria-label="Play help"
+            >
+              🔊
+            </button>
+          </div>
+
+          <button
+            id="logout"
+            class="btn btn-danger text-sm py-2 px-4"
+            data-i18n="logout"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto px-4 py-8">
+      <!-- Submit Form Section -->
+      <div class="mb-12 animate-fade-in">
+        <h1
+          class="text-4xl font-bold text-blue-700 mb-2"
+          data-i18n="submitTitle"
+        >
+          Submit a Complaint
+        </h1>
+        <p class="text-gray-600 mb-6" data-i18n="submitLead">
+          Report water supply issues in your area with photos and location
+        </p>
+
+        <div class="card form-card">
+          <form id="complaintForm" class="space-y-6">
+            <div>
+              <label class="label" for="title" data-i18n="titleLabel"
+                >Title</label
+              >
+              <input
+                id="title"
+                class="input-field"
+                placeholder="e.g., Water supply disruption in Sector 5"
+                required
+              />
+            </div>
+
+            <div>
+              <label class="label" for="description" data-i18n="descLabel"
+                >Description</label
+              >
+              <textarea
+                id="description"
+                class="input-field"
+                rows="4"
+                placeholder="Describe the issue in detail..."
+                required
+              ></textarea>
+            </div>
+
+            <div>
+              <label class="label" for="photo" data-i18n="photoLabel"
+                >Photo (Optional)</label
+              >
+              <input
+                id="photo"
+                type="file"
+                accept="image/*"
+                class="input-field"
+              />
+            </div>
+
+            <div>
+              <button
+                type="button"
+                id="getLocation"
+                class="btn btn-secondary"
+                data-i18n="useLocation"
+              >
+                <svg
+                  class="w-5 h-5 inline-block mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span data-i18n="useLocation">Use My Location</span>
+              </button>
+              <div
+                id="locationInfo"
+                class="location-info mt-3 hidden"
+                role="status"
+                aria-live="polite"
+              >
+                <svg
+                  class="w-5 h-5 flex-shrink-0"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span id="locationText" data-i18n="locationSet"
+                  >Location set</span
+                >
+              </div>
+            </div>
+
+            <div class="flex justify-end">
+              <button
+                type="submit"
+                class="btn btn-primary"
+                data-i18n="submitBtn"
+              >
+                Submit Complaint
+              </button>
+            </div>
+          </form>
+          <p
+            id="formMsg"
+            class="mt-4 text-sm text-red-600 hidden"
+            role="alert"
+          ></p>
+        </div>
+      </div>
+
+      <!-- My Complaints Section -->
+      <section class="animate-fade-in-up" style="animation-delay: 0.2s">
+        <h2
+          class="text-3xl font-bold text-blue-700 mb-6"
+          data-i18n="myComplaints"
+        >
+          My Complaints
+        </h2>
+        <div id="complaintsList" class="space-y-6"></div>
+      </section>
+    </main>
+
+    <script>
+      /**********************
+       * TRANSLATION DICTIONARY
+       **********************/
+      const translations = {
+        en: {
+          title: "User Dashboard - Blue Pulse",
+          audioPlayShort: "Play help",
+          home: "Home",
+          logout: "Logout",
+          submitTitle: "Submit a Complaint",
+          submitLead:
+            "Report water supply issues in your area with photos and location",
+          titleLabel: "Title",
+          descLabel: "Description",
+          photoLabel: "Photo (Optional)",
+          useLocation: "Use My Location",
+          locationSet: "Location set",
+          submitBtn: "Submit Complaint",
+          myComplaints: "My Complaints",
+          formSubmitting: "Submitting...",
+          locationGetting: "Getting location...",
+          locationNotSupported: "Geolocation not supported by your browser.",
+          locationRequiresHttps: "⚠️ Geolocation requires HTTPS or localhost.",
+          locationErrorPrefix: "Location error:",
+          locationApproxPrefix: "Approx location (IP):",
+          noComplaintsTitle: "No Complaints Yet",
+          noComplaintsLead: "Submit your first complaint to get started.",
+          audioHint:
+            "First fill title and description. Optionally add a photo. Use the location button to attach your location. Then press Submit Complaint.",
+          loginRequired: "Please login to access the dashboard",
+          submitSuccess: "Submitted successfully!",
+          submitFailed: "Failed to submit complaint.",
+          assignedToLabel: "Assigned To",
+        },
+        hi: {
+          title: "उपयोगकर्ता डैशबोर्ड - ब्लू पल्स",
+          audioPlayShort: "सहायता सुनें",
+          home: "होम",
+          logout: "लॉग आउट",
+          submitTitle: "शिकायत दर्ज करें",
+          submitLead:
+            "अपनी क्षेत्र की जल आपूर्ति समस्याओं की फोटो और स्थान के साथ रिपोर्ट करें",
+          titleLabel: "शीर्षक",
+          descLabel: "विवरण",
+          photoLabel: "फोटो (वैकल्पिक)",
+          useLocation: "मेरा स्थान भेजें",
+          locationSet: "स्थान सेट किया गया",
+          submitBtn: "शिकायत भेजें",
+          myComplaints: "मेरी शिकायतें",
+          formSubmitting: "जमा किया जा रहा है...",
+          locationGetting: "स्थान प्राप्त कर रहे हैं...",
+          locationNotSupported: "आपके ब्राउज़र में जियोलोकेशन समर्थित नहीं है।",
+          locationRequiresHttps:
+            "⚠️ जियोलोकेशन के लिए HTTPS या localhost आवश्यक है।",
+          locationErrorPrefix: "स्थान त्रुटि:",
+          locationApproxPrefix: "अनुमानित स्थान (IP):",
+          noComplaintsTitle: "कोई शिकायत नहीं",
+          noComplaintsLead: "आरंभ करने के लिए अपनी पहली शिकायत भेजें।",
+          audioHint:
+            "शीर्षक और विवरण भरें। वैकल्पिक रूप से फोटो जोड़ें। स्थान जोड़ने के लिए 'मेरा स्थान भेजें' दबाएँ। फिर 'शिकायत भेजें' दबाएँ।",
+          loginRequired: "कृपया डैशबोर्ड एक्सेस करने के लिए लॉगिन करें",
+          submitSuccess: "सफलतापूर्वक भेज दिया गया!",
+          submitFailed: "शिकायत भेजने में विफल।",
+          assignedToLabel: "जिम्मेदार",
+        },
+      };
+
+      // language selection: localStorage -> navigator -> default 'hi'
+      let lang =
+        localStorage.getItem("site-lang") ||
+        (navigator.language && navigator.language.startsWith("hi")
+          ? "hi"
+          : "hi");
+
+      function applyTranslations() {
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (translations[lang] && translations[lang][key]) {
+            if (el.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+              if (translations[lang][key])
+                el.placeholder = translations[lang][key];
+            } else {
+              el.innerText = translations[lang][key];
+            }
+          }
+        });
+        if (translations[lang].title) document.title = translations[lang].title;
+        const toggle = document.getElementById("langToggle");
+        if (toggle) toggle.innerText = lang === "hi" ? "English" : "हिन्दी";
+        if (toggle)
+          toggle.setAttribute("aria-pressed", (lang === "hi").toString());
+      }
+
+      // Replace your old speak(...) with this (only pre-recorded audio, no TTS)
+      async function speak() {
+        const langToken = lang === "hi" ? "hi" : "en";
+        const candidates = [`/audio/comp_${langToken}.mp3`];
+        for (const url of candidates) {
+          try {
+            const audio = new Audio(url);
+            await audio.play();
+            return;
+          } catch (err) {
+            console.debug("Audio play failed for", url, err);
+          }
+        }
+        console.warn(
+          "No pre-recorded audio available for language:",
+          langToken
+        );
+      }
+
+      // wire controls
+      document.getElementById("langToggle").addEventListener("click", () => {
+        lang = lang === "hi" ? "en" : "hi";
+        localStorage.setItem("site-lang", lang);
+        applyTranslations();
+      });
+
+      document.getElementById("playHelp").addEventListener("click", () => {
+        speak();
+      });
+
+      window.speechSynthesis.onvoiceschanged = () => {};
+
+      /**********************
+       * EXISTING DASHBOARD LOGIC (auth, geolocation, submit, load)
+       **********************/
+      const API_BASE = "http://localhost:5000/api";
+      const token = localStorage.getItem("bp_token");
+      const userRaw = localStorage.getItem("bp_user");
+
+      if (!token || !userRaw) {
+        alert(translations[lang].loginRequired);
+        location.href = "/login.html";
+      }
+
+      const user = JSON.parse(userRaw);
+
+      const authFetch = (url, opts = {}) => {
+        opts.headers = opts.headers || {};
+        opts.headers["Authorization"] = `Bearer ${token}`;
+        return fetch(url, opts);
+      };
+
+      document.getElementById("logout").addEventListener("click", () => {
+        localStorage.removeItem("bp_token");
+        localStorage.removeItem("bp_user");
+        location.href = "/";
+      });
+
+      // --- Geolocation ---
+      let currentLocation = null;
+      const getLocationBtn = document.getElementById("getLocation");
+      getLocationBtn.addEventListener("click", getUserLocation);
+
+      async function getUserLocation() {
+        const btn = getLocationBtn;
+        const infoEl = document.getElementById("locationInfo");
+        const textEl = document.getElementById("locationText");
+
+        btn.disabled = true;
+        const gettingText =
+          translations[lang].locationGetting || "Getting location...";
+        btn.innerHTML = `<span class="animate-pulse-soft">${gettingText}</span>`;
+
+        if (!("geolocation" in navigator)) {
+          textEl.textContent =
+            translations[lang].locationNotSupported ||
+            "Geolocation not supported by your browser.";
+          infoEl.classList.remove("hidden");
+          btn.disabled = false;
+          applyTranslations();
+          return;
+        }
+
+        if (!window.isSecureContext && location.hostname !== "localhost") {
+          textEl.textContent =
+            translations[lang].locationRequiresHttps ||
+            "Geolocation requires HTTPS or localhost.";
+          infoEl.classList.remove("hidden");
+          tryIpFallback(infoEl, textEl, btn);
+          return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            currentLocation = {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+            };
+            textEl.textContent = `${currentLocation.lat.toFixed(
+              4
+            )}, ${currentLocation.lng.toFixed(4)}`;
+            infoEl.classList.remove("hidden");
+            infoEl.classList.add("animate-scale-in");
+            btn.disabled = false;
+            btn.innerHTML =
+              "✓ " + (lang === "hi" ? "स्थान सेट" : "Location Set");
+            btn.classList.remove("btn-secondary");
+            btn.classList.add("btn-success");
+          },
+          (err) => {
+            console.warn("Geolocation error", err);
+            textEl.textContent = `${
+              translations[lang].locationErrorPrefix || "Location error:"
+            } ${err.message}`;
+            infoEl.classList.remove("hidden");
+            tryIpFallback(infoEl, textEl, btn);
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+        );
+      }
+
+      async function tryIpFallback(infoEl, textEl, btn) {
+        try {
+          textEl.textContent +=
+            " " +
+            (lang === "hi"
+              ? "IP-आधारित स्थान जानने की कोशिश..."
+              : "Trying IP-based location...");
+          const res = await fetch("https://ipapi.co/json/");
+          if (!res.ok) throw new Error("IP lookup failed");
+          const data = await res.json();
+          if (data.latitude && data.longitude) {
+            currentLocation = { lat: data.latitude, lng: data.longitude };
+            textEl.textContent = `${
+              translations[lang].locationApproxPrefix || "Approx location (IP):"
+            } ${data.city || "Unknown"}, ${currentLocation.lat.toFixed(
+              2
+            )}, ${currentLocation.lng.toFixed(2)}`;
+            btn.disabled = false;
+            btn.innerHTML =
+              "✓ " +
+              (lang === "hi" ? "अनुमानित स्थान सेट" : "Location Set (Approx)");
+          } else {
+            textEl.textContent =
+              lang === "hi"
+                ? "IP द्वारा स्थान निर्धारित नहीं कर सके।"
+                : "Could not determine location via IP.";
+            btn.disabled = false;
+            applyTranslations();
+          }
+        } catch (err) {
+          console.error("IP fallback failed", err);
+          textEl.textContent =
+            lang === "hi"
+              ? "अनुचित अनुमति या त्रुटि — स्थान नहीं मिला।"
+              : "Unable to get location (check permissions).";
+          btn.disabled = false;
+          applyTranslations();
+        }
+      }
+
+      // --- Submit complaint ---
+      const complaintForm = document.getElementById("complaintForm");
+      complaintForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formMsg = document.getElementById("formMsg");
+        formMsg.classList.add("hidden");
+
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML =
+          translations[lang].formSubmitting || "Submitting...";
+
+        const formData = new FormData();
+        formData.append("title", document.getElementById("title").value || "");
+        formData.append(
+          "description",
+          document.getElementById("description").value || ""
+        );
+
+        if (currentLocation) {
+          formData.append("lat", currentLocation.lat);
+          formData.append("lng", currentLocation.lng);
+        }
+
+        const file = document.getElementById("photo").files[0];
+        if (file) formData.append("file", file);
+
+        try {
+          const res = await fetch(`${API_BASE}/complaints`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData,
+          });
+          const data = await res.json();
+          if (!res.ok) throw data;
+
+          submitBtn.innerHTML =
+            "✓ " +
+            (lang === "hi"
+              ? translations[lang].submitSuccess
+              : "Submitted successfully!");
+          submitBtn.classList.remove("btn-primary");
+          submitBtn.style.background =
+            "linear-gradient(135deg,#10b981 0%,#059669 100%)";
+
+          setTimeout(() => {
+            complaintForm.reset();
+            document.getElementById("locationInfo").classList.add("hidden");
+            currentLocation = null;
+            const locBtn = document.getElementById("getLocation");
+            locBtn.innerHTML =
+              translations[lang].useLocation || "Use My Location";
+            locBtn.classList.remove("btn-success");
+            locBtn.classList.add("btn-secondary");
+            submitBtn.innerHTML = translations[lang].submitBtn || originalText;
+            submitBtn.disabled = false;
+            submitBtn.classList.add("btn-primary");
+            submitBtn.style.background = "";
+            loadMyComplaints();
+          }, 1600);
+        } catch (err) {
+          console.error("Submit failed:", err);
+          formMsg.textContent =
+            err && err.error
+              ? err.error
+              : translations[lang].submitFailed ||
+                "Failed to submit complaint.";
+          formMsg.classList.remove("hidden");
+          submitBtn.innerHTML = originalText;
+          submitBtn.disabled = false;
+        }
+      });
+
+      /*****************************************
+       * NEW: employees cache + robust complaint rendering
+       * - fetchEmployees() builds `employeesById` map
+       * - loadMyComplaints() uses that map when `c.assigned_to` is an id
+       *****************************************/
+      let employeesById = {}; // { id: { id, name, email, phone } }
+
+      async function fetchEmployees() {
+        try {
+          const res = await authFetch(`${API_BASE}/employees`);
+          // If non-admin user will get 403 — that's okay for viewers; don't throw.
+          if (!res.ok) {
+            console.warn("Could not load employees list (status)", res.status);
+            // keep employeesById empty and return
+            employeesById = {};
+            return;
+          }
+          const arr = await res.json();
+          if (Array.isArray(arr)) {
+            employeesById = {};
+            arr.forEach((e) => {
+              employeesById[String(e.id)] = {
+                id: e.id,
+                name: e.name,
+                email: e.email,
+                phone: e.phone,
+              };
+            });
+          }
+        } catch (err) {
+          console.error("fetchEmployees error:", err);
+          employeesById = {};
+        }
+      }
+
+      async function loadMyComplaints() {
+        try {
+          // load employees first (best-effort)
+          await fetchEmployees();
+
+          const res = await authFetch(`${API_BASE}/complaints`);
+          if (!res.ok) {
+            throw new Error(
+              "Failed to load complaints (status " + res.status + ")"
+            );
+          }
+          const arr = await res.json();
+          const list = document.getElementById("complaintsList");
+
+          if (!Array.isArray(arr)) {
+            list.innerHTML =
+              '<div class="card"><div class="text-red-600 text-center">' +
+              (lang === "hi"
+                ? "शिकायतें लोड करने में असफल।"
+                : "Failed to load complaints.") +
+              "</div></div>";
+            return;
+          }
+
+          if (arr.length === 0) {
+            list.innerHTML = `...`; // your empty state HTML (unchanged)
+            return;
+          }
+
+          // render complaints resiliently:
+          list.innerHTML = arr
+            .map((c, index) => {
+              // Resolve assigned_to: either object or id
+              let assignedHtml = "";
+              if (c.assigned_to) {
+                if (typeof c.assigned_to === "object") {
+                  const at = c.assigned_to;
+                  assignedHtml = `
+            <div class="mb-3 assigned-block">
+              <div class="font-semibold mb-1">👷 ${escapeHtml(
+                translations[lang].assignedToLabel || "Assigned To"
+              )}: ${escapeHtml(at.name || "Unknown")}</div>
+              <div>📞 ${escapeHtml(at.phone || "N/A")}</div>
+              <div>✉️ ${escapeHtml(at.email || "N/A")}</div>
+            </div>`;
+                } else {
+                  // id case
+                  const e = employeesById[String(c.assigned_to)];
+                  if (e) {
+                    assignedHtml = `
+              <div class="mb-3 assigned-block">
+                <div class="font-semibold mb-1">👷 ${escapeHtml(
+                  translations[lang].assignedToLabel || "Assigned To"
+                )}: ${escapeHtml(e.name || "Unknown")}</div>
+                <div>📞 ${escapeHtml(e.phone || "N/A")}</div>
+                <div>✉️ ${escapeHtml(e.email || "N/A")}</div>
+              </div>`;
+                  } else {
+                    assignedHtml = `
+              <div class="mb-3 assigned-block">
+                <div class="font-semibold mb-1">👷 ${escapeHtml(
+                  translations[lang].assignedToLabel || "Assigned To"
+                )}: ${escapeHtml("Assigned (details unavailable)")}</div>
+              </div>`;
+                  }
+                }
+              }
+
+              return `
+        <div class="card complaint-card animate-fade-in-up" style="animation-delay: ${
+          index * 0.06
+        }s;">
+          <div class="flex items-start gap-4">
+            <svg class="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <div class="flex-1">
+              <div class="flex items-start justify-between mb-2">
+                <h3 class="font-bold text-xl text-slate-800">${escapeHtml(
+                  c.title || ""
+                )}</h3>
+                <span class="status-badge status-${escapeHtml(
+                  c.status || "raised"
+                )}">${escapeHtml(c.status || "raised")}</span>
+              </div>
+
+              <p class="text-gray-600 mb-3">${escapeHtml(
+                c.description || ""
+              )}</p>
+
+              ${
+                c.photo_path
+                  ? `<div class="mb-3"><img src="/uploads/${encodeURIComponent(
+                      c.photo_path
+                    )}" class="complaint-image" alt="Complaint photo"></div>`
+                  : ""
+              }
+
+              ${assignedHtml}
+
+              <div class="flex items-center gap-2 text-sm text-gray-500">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>${new Date(
+                  c.timestamp || c.created_at || Date.now()
+                ).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        </div>`;
+            })
+            .join("");
+        } catch (err) {
+          console.error("Error loading complaints:", err);
+          const list = document.getElementById("complaintsList");
+          list.innerHTML =
+            '<div class="card"><div class="text-red-600 text-center">' +
+            (lang === "hi"
+              ? "शिकायतें लोड करने में त्रुटि। कृपया पुनः प्रयास करें।"
+              : "Error loading complaints. Please try again.") +
+            "</div></div>";
+        }
+      }
+
+      // small helper to avoid XSS when injecting
+      function escapeHtml(str = "") {
+        return String(str)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      // initial translations + load complaints (and employees)
+      applyTranslations();
+      loadMyComplaints();
+    </script>
+  </body>
+</html>
